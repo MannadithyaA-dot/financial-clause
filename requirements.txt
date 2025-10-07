@@ -1,0 +1,10 @@
+streamlit
+docx2txt
+pdfplumber
+pandas
+spacy
+easyocr
+pillow
+numpy
+torch
+torchvision
