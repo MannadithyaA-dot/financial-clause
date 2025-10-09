@@ -2,7 +2,7 @@ streamlit
 docx2txt
 pdfplumber
 pandas
-spacy
+spacy==3.7.4 --prefer-binary
 easyocr
 pillow
 numpy
