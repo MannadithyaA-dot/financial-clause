@@ -1,13 +1,2 @@
-streamlit
-docx2txt
-pdfplumber
-pandas
-spacy==3.7.4 --prefer-binary
-easyocr
-pillow
-numpy
-torch
-torchvision
-en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.0/en_core_web_sm-3.7.0.tar.gz
-pip install pipreqs
-pipreqs --encoding=utf8
+--prefer-binary
+spacy==3.7.2
