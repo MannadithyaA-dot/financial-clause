@@ -6,10 +6,14 @@ import re
 import spacy
 from PIL import Image
 import easyocr  # EasyOCR for local OCR
-
+import numpy as np # Added for numpy array conversion
 
 # Load spaCy model
-nlp = spacy.load("en_core_web_sm")
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    st.error("SpaCy model 'en_core_web_sm' not found. Please run 'python -m spacy download en_core_web_sm' in your environment.")
+    st.stop()
 reader = easyocr.Reader(['en'])  # Initialize EasyOCR reader
 
 # Risk keywords
@@ -49,8 +53,6 @@ def extract_text_pdf(file):
     return text
 
 # Extract text from scanned PDF using EasyOCR
-import numpy as np
-
 def extract_text_scanned_pdf(file):
     text = ""
     with pdfplumber.open(file) as pdf:
