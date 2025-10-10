@@ -1,2 +1,9 @@
 --prefer-binary
 spacy==2.3.7
+easyocr
+pdfplumber
+docx2txt
+pandas
+numpy
+Pillow
+streamlit
