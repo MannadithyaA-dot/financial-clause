@@ -9,5 +9,5 @@ easyocr
 torch
 opencv-python-headless
 
-# This line installs the spaCy model
+# This is the crucial line that installs the spaCy model package
 https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.4.1/en_core_web_sm-3.4.1.tar.gz
