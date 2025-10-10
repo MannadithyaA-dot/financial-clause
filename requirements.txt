@@ -1,5 +1,5 @@
 --prefer-binary
-spacy==2.3.7
+spacy
 easyocr
 pdfplumber
 docx2txt
