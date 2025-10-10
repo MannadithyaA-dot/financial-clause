@@ -13,6 +13,8 @@ WORKDIR /app
 # 4. Copy your requirements file and install Python packages.
 # This is done in a separate step to leverage Docker's caching.
 COPY requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install --upgrade setuptools wheel
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 5. Copy the rest of your application code into the container.
