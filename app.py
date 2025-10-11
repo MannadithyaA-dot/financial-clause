@@ -117,11 +117,6 @@ def analyze_clauses(document_text, keyword):
             })
     return results
 
-
-
-
-
-
 # ✅ Rule-based clause explainer using spaCy
 def explain_clause_spacy(text):
     doc = nlp(text)
