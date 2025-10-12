@@ -18,15 +18,15 @@ RUN pip install --upgrade pip
 # 6. Install PyTorch and torchvision FIRST from the correct index.
 RUN pip install --no-cache-dir torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu
 
-# 7. Copy the requirements file that has ALL the pinned versions
+# 7. Copy the final requirements file
 COPY requirements.txt .
 
 # 8. Install everything from the pinned requirements file.
-#    This uses pre-compiled wheels with versions locked for compatibility.
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 9. Download the spaCy language model
-RUN python -m spacy download en_core_web_sm
+# 9. FINAL STEP: Pre-download and cache the EasyOCR models during the build.
+#    This makes the container self-contained and prevents runtime errors.
+RUN python -c "import easyocr; reader = easyocr.Reader(['en'])"
 
 # 10. Copy your application code and set ownership for the non-root user
 COPY --chown=appuser:appuser . .
