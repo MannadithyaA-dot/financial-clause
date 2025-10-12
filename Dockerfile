@@ -7,16 +7,17 @@ ENV PYTHONUNBUFFERED 1
 
 # 3. Install system dependencies for OpenCV and other libraries
 RUN apt-get update && apt-get install -y build-essential libgl1
-# 4. Create a non-root user for security
-RUN useradd appuser
+
+# 4. Create a non-root user for security and GIVE IT OWNERSHIP of its home
+RUN useradd appuser && chown -R appuser:appuser /home/appuser
 WORKDIR /home/appuser/app
 
 # 5. Upgrade Python's build tools
 RUN pip install --upgrade pip setuptools wheel
 
-# 6. Copy and install Python packages
+# 6. Copy and install Python packages (rebuilding spacy from source)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --no-binary spacy -r requirements.txt
 
 # 7. Copy your application code and set ownership
 COPY --chown=appuser:appuser . .
