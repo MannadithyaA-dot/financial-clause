@@ -25,15 +25,12 @@ RUN pip install --upgrade pip
 #    This must use a pre-compiled binary for a CPU-only environment.
 RUN pip install --no-cache-dir torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu
 
-# 7. Copy requirements file
+# 7. Copy the requirements file that has the pinned versions
 COPY requirements.txt .
 
-# 8. KEY FIX 2: Install the REST of the packages.
-#    This uses the targeted fix for the spaCy/NumPy incompatibility.
-RUN pip install \
-    --no-cache-dir \
-    --no-binary "thinc,murmurhash,preshed,cymem,blis" \
-    -r requirements.txt
+# 8. KEY FIX 2: Install the pinned packages from requirements.txt
+#    We only rebuild blis from source, as it's the core calculation engine.
+RUN pip install --no-cache-dir --no-binary "blis" -r requirements.txt
 
 # 9. Download the spaCy language model
 RUN python -m spacy download en_core_web_sm
