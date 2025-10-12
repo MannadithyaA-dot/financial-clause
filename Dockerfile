@@ -8,8 +8,8 @@ ENV PYTHONUNBUFFERED 1
 # 3. Install system dependencies
 RUN apt-get update && apt-get install -y build-essential libgl1
 
-# 4. Create a non-root user and fix home directory permissions
-RUN useradd appuser && chown -R appuser:appuser /home/appuser
+# 4. Create a non-root user AND its home directory
+RUN useradd -m appuser
 WORKDIR /home/appuser/app
 
 # 5. Upgrade Python's build tools
