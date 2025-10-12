@@ -6,8 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # 3. Install system dependencies for OpenCV and other libraries
-RUN apt-get update && apt-get install -y build-essential libgl1-mesa-glx
-
+RUN apt-get update && apt-get install -y build-essential libgl1
 # 4. Create a non-root user for security
 RUN useradd appuser
 WORKDIR /home/appuser/app
