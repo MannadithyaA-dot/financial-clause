@@ -6,7 +6,6 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # 3. Install ALL system dependencies required for a full source build
-#    FINAL FIX: Adds autoconf/automake/libtool for the GNU Build System.
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
@@ -20,27 +19,33 @@ RUN useradd -m appuser
 WORKDIR /home/appuser/app
 
 # 5. Upgrade Python's build tools first
-RUN pip install --upgrade pip setuptools wheel
+RUN pip install --upgrade pip
 
-# 6. Copy requirements file
+# 6. KEY FIX 1: Install PyTorch and torchvision FIRST from the correct index.
+#    This must use a pre-compiled binary for a CPU-only environment.
+RUN pip install --no-cache-dir torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu
+
+# 7. Copy requirements file
 COPY requirements.txt .
 
-# 7. DEFINITIVE FIX: Install a stable numpy, then rebuild ALL other packages from source
-#    The --no-binary :all: flag forbids pre-compiled wheels, guaranteeing compatibility.
-RUN pip install --no-cache-dir numpy==1.23.5 && \
-    pip install --no-cache-dir --no-binary :all: -r requirements.txt
+# 8. KEY FIX 2: Install the REST of the packages.
+#    This uses the targeted fix for the spaCy/NumPy incompatibility.
+RUN pip install \
+    --no-cache-dir \
+    --no-binary "thinc,murmurhash,preshed,cymem,blis" \
+    -r requirements.txt
 
-# 8. Download the spaCy language model
+# 9. Download the spaCy language model
 RUN python -m spacy download en_core_web_sm
 
-# 9. Copy your application code and set ownership for the non-root user
+# 10. Copy your application code and set ownership for the non-root user
 COPY --chown=appuser:appuser . .
 
-# 10. Switch to the non-root user for security
+# 11. Switch to the non-root user for security
 USER appuser
 
-# 11. Expose the port Streamlit runs on
+# 12. Expose the port Streamlit runs on
 EXPOSE 8501
 
-# 12. The command to run the Streamlit app
+# 13. The command to run the Streamlit app
 CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
