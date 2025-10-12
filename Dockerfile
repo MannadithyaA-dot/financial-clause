@@ -18,14 +18,10 @@ RUN pip install --upgrade pip setuptools wheel
 # 6. Copy requirements file
 COPY requirements.txt .
 
-# 7. Install dependencies, forcing a rebuild of ALL core spaCy components.
-#    THIS IS THE DEFINITIVE FIX. It targets not just thinc, but also blis
-#    and all other underlying C-extension libraries.
+# 7. DEFINITIVE FIX: Install a stable numpy, then rebuild ALL other packages from source
+#    The --no-binary :all: flag forbids pre-compiled wheels, guaranteeing compatibility.
 RUN pip install --no-cache-dir numpy==1.23.5 && \
-    pip install \
-        --no-cache-dir \
-        --no-binary "thinc,murmurhash,preshed,cymem,blis" \
-        -r requirements.txt
+    pip install --no-cache-dir --no-binary :all: -r requirements.txt
 
 # 8. Download the spaCy language model
 RUN python -m spacy download en_core_web_sm
@@ -40,4 +36,4 @@ USER appuser
 EXPOSE 8501
 
 # 12. The command to run the Streamlit app
-CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.20.0"]
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
