@@ -5,14 +5,8 @@ FROM python:3.9-slim
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# 3. Install ALL system dependencies required for a full source build
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    cmake \
-    libgl1 \
-    autoconf \
-    automake \
-    libtool
+# 3. Install required system dependencies
+RUN apt-get update && apt-get install -y build-essential libgl1
 
 # 4. Create a non-root user AND its home directory correctly
 RUN useradd -m appuser
@@ -21,16 +15,15 @@ WORKDIR /home/appuser/app
 # 5. Upgrade Python's build tools first
 RUN pip install --upgrade pip
 
-# 6. KEY FIX 1: Install PyTorch and torchvision FIRST from the correct index.
-#    This must use a pre-compiled binary for a CPU-only environment.
+# 6. Install PyTorch and torchvision FIRST from the correct index.
 RUN pip install --no-cache-dir torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu
 
-# 7. Copy the requirements file that has the pinned versions
+# 7. Copy the requirements file that has ALL the pinned versions
 COPY requirements.txt .
 
-# 8. KEY FIX 2: Install the pinned packages from requirements.txt
-#    We only rebuild blis from source, as it's the core calculation engine.
-RUN pip install --no-cache-dir --no-binary "blis" -r requirements.txt
+# 8. Install everything from the pinned requirements file.
+#    This uses pre-compiled wheels with versions locked for compatibility.
+RUN pip install --no-cache-dir -r requirements.txt
 
 # 9. Download the spaCy language model
 RUN python -m spacy download en_core_web_sm
