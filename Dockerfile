@@ -5,8 +5,9 @@ FROM python:3.9-slim
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# 3. Install system dependencies (build tools are essential)
-RUN apt-get update && apt-get install -y build-essential libgl1
+# 3. Install ALL system dependencies, including cmake
+#    THIS IS THE FINAL FIX: cmake is required to build one of the packages from source.
+RUN apt-get update && apt-get install -y build-essential libgl1 cmake
 
 # 4. Create a non-root user AND its home directory correctly
 RUN useradd -m appuser
